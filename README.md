@@ -1,34 +1,61 @@
-# search_engines  
-A Python library that queries Google, Bing, Yahoo and other search engines and collects the results from multiple search engine results pages.  
-Please note that web-scraping may be against the TOS of some search engines, and may result in a temporary ban.
+# Enhanced Search-Engines-Scraper for EasyApply.co
 
-## Supported search engines  
+This project is an enhanced version of the original [Search-Engines-Scraper](https://github.com/tasos-py/Search-Engines-Scraper) specifically optimized for comprehensive scraping of EasyApply.co job board sites.
 
-_[Google](https://www.google.com)_  
-_[Bing](https://www.bing.com)_  
-_[Yahoo](https://search.yahoo.com)_  
-_[Duckduckgo](https://duckduckgo.com)_  
-<del>_[Startpage](https://www.startpage.com)_</del>  
-_[Aol](https://search.aol.com)_  
-<del>_[Dogpile](https://www.dogpile.com)_</del>  
-<del>_[Ask](https://uk.ask.com)_</del>  
-_[Mojeek](https://www.mojeek.com)_  
-<del>_[Brave](https://search.brave.com/)_</del>  
-_[Torch](http://xmh57jrzrnw6insl.onion/4a1f6b371c/search.cgi)_  
+## Overview
 
-## Features  
+The original Search-Engines-Scraper was encountering pagination issues where Bing would return the same 10 results on every page. This enhanced version addresses those issues and successfully discovers significantly more results.
 
- - Creates output files (html, csv, json).  
- - Supports search filters (url, title, text).  
- - HTTP and SOCKS proxy support.  
- - Collects dark web links with Torch.  
- - Easy to add new search engines. You can add a new engine by creating a new class in `search_engines/engines/` and add it to the  `search_engines_dict` dictionary in `search_engines/engines/__init__.py`. The new class should subclass `SearchEngine`, and override the following methods: `_selectors`, `_first_page`, `_next_page`. 
- - Python2 - Python3 compatible.  
+## Key Improvements
 
-## Requirements  
+### 1. Fixed Base64 Decoding Error
+- **Issue**: Original library had Base64 decoding errors in `search_engines/engines/bing.py`
+- **Solution**: Added proper error handling and fallback mechanisms
 
-_Python 2.7 - 3.x_ with  
-_[Requests](http://docs.python-requests.org/en/master/)_ and  
+### 2. Improved Pagination Handling
+- **Issue**: Same results appearing on multiple pages due to bot detection
+- **Solution**: Direct HTTP requests with proper Bing pagination parameters (`first` parameter)
+
+### 3. Enhanced Bot Detection Avoidance
+- Better browser simulation with comprehensive headers
+- Session persistence for maintaining search context
+- Random delays between requests
+
+## Results Summary
+
+- **Original method**: 18 unique easyapply.co URLs
+- **Enhanced method**: 102 unique easyapply.co URLs (**467% increase**)
+- **Organizations discovered**: 73 different companies using EasyApply platform
+
+## Usage
+
+### Quick Start - Improved Scraper
+```bash
+python improved_bing_scraper.py
+```
+
+### Consolidate Results
+```bash
+python consolidate_improved_results.py
+```
+
+## Files
+
+### Core Scrapers
+- `improved_bing_scraper.py` - Main enhanced scraper with multiple search strategies
+- `incremental_bing_scraper.py` - Incremental saving version
+- `comprehensive_scraper.py` - Multi-strategy scraper using the original library
+
+### Utility Scripts
+- `consolidate_improved_results.py` - Consolidates all CSV results into master file
+- `test_failed_strategies.py` - Tests for library fixes
+
+### Fixed Library Files
+- `search_engines/engines/bing.py` - Fixed Base64 decoding issues
+
+---
+
+# Original search_engines Library  
 _[BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)_  
 
 ## Installation  

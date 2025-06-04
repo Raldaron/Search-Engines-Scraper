@@ -41,17 +41,31 @@ class Bing(SearchEngine):
     def _get_url(self, tag, item='href'):
         '''Returns the URL of search results items.'''
         url = super(Bing, self)._get_url(tag, 'href')
+        resp = url  # Default fallback to original URL
 
         try:
             parsed_url = urlparse(url)
             query_params = parse_qs(parsed_url.query)
-            encoded_url = query_params["u"][0][2:]
-            # fix base64 padding
-            encoded_url += (len(encoded_url) % 4) * "="
+            
+            # Check if 'u' parameter exists in the query
+            if "u" in query_params and len(query_params["u"]) > 0:
+                encoded_url = query_params["u"][0]
+                
+                # Remove 'a1' prefix if present
+                if encoded_url.startswith('a1'):
+                    encoded_url = encoded_url[2:]
+                
+                # fix base64 padding
+                encoded_url += (len(encoded_url) % 4) * "="
 
-            decoded_bytes = base64.b64decode(encoded_url)
-            resp = decoded_bytes.decode('utf-8')
+                decoded_bytes = base64.b64decode(encoded_url)
+                resp = decoded_bytes.decode('utf-8')
+            else:
+                # If no 'u' parameter, the URL might be direct
+                resp = url
+                
         except Exception as e:
-            print(f"Error decoding Base64 string: {e}")
+            print(f"Error decoding Base64 string: {e}, falling back to original URL")
+            resp = url  # Fallback to original URL
 
         return resp
